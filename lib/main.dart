@@ -176,7 +176,7 @@ class _LabHomePageState extends State<LabHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Learning Objectives (Class 12 Level):',
+                          'Learning Objectives :',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
