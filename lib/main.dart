@@ -1,4 +1,4 @@
-﻿import 'dart:math' as math;
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -354,10 +354,11 @@ class _LabHomePageState extends State<LabHomePage>
             children: [
               // ================= 1. COVER / TITLE SCREEN =================
               Container(
-                height: screenHeight,
+                constraints: BoxConstraints(minHeight: screenHeight),
                 width: double.infinity,
                 color: bgColor,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -1539,66 +1540,86 @@ class _LabHomePageState extends State<LabHomePage>
     required ValueChanged<double> onSliderChanged,
     required ValueChanged<String> onTextChanged,
   }) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 175,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w600,
-              color: textColor,
-            ),
+    final labelWidget = Text(
+      label,
+      style: TextStyle(
+        fontSize: 12.5,
+        fontWeight: FontWeight.w600,
+        color: textColor,
+      ),
+    );
+    final slider = Slider(
+      value: value.clamp(min, max),
+      min: min,
+      max: max,
+      onChanged: onSliderChanged,
+    );
+    final input = SizedBox(
+      width: 85,
+      height: 34,
+      child: TextField(
+        controller: controller,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 12.5,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'monospace',
+          color: textColor,
+        ),
+        decoration: InputDecoration(
+          suffixText: unit,
+          suffixStyle: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            color: subTextColor,
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 6, vertical: 7),
+          isDense: true,
+          filled: true,
+          fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide(color: borderColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide(color: brandColor, width: 1.5),
           ),
         ),
-        Expanded(
-          child: Slider(
-            value: value.clamp(min, max),
-            min: min,
-            max: max,
-            onChanged: onSliderChanged,
-          ),
-        ),
-        const SizedBox(width: 8),
-        SizedBox(
-          width: 85,
-          height: 34,
-          child: TextField(
-            controller: controller,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'monospace',
-              color: textColor,
-            ),
-            decoration: InputDecoration(
-              suffixText: unit,
-              suffixStyle: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: subTextColor,
+        onChanged: onTextChanged,
+      ),
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 520) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              labelWidget,
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Expanded(child: slider),
+                  const SizedBox(width: 8),
+                  input,
+                ],
               ),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 6, vertical: 7),
-              isDense: true,
-              filled: true,
-              fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
-                borderSide: BorderSide(color: borderColor),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
-                borderSide: BorderSide(color: brandColor, width: 1.5),
-              ),
-            ),
-            onChanged: onTextChanged,
-          ),
-        ),
-      ],
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            SizedBox(width: 175, child: labelWidget),
+            Expanded(child: slider),
+            const SizedBox(width: 8),
+            input,
+          ],
+        );
+      },
     );
   }
 
@@ -1609,43 +1630,63 @@ class _LabHomePageState extends State<LabHomePage>
     required Color textColor,
     required ValueChanged<double> onChanged,
   }) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 175,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w600,
-              color: textColor,
-            ),
-          ),
+    final labelWidget = Text(
+      label,
+      style: TextStyle(
+        fontSize: 12.5,
+        fontWeight: FontWeight.w600,
+        color: textColor,
+      ),
+    );
+    final slider = Slider(
+      value: value,
+      min: 0.2,
+      max: 2.0,
+      divisions: 9,
+      onChanged: onChanged,
+    );
+    final speedLabel = SizedBox(
+      width: 85,
+      child: Text(
+        '${value.toStringAsFixed(1)}x',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 12.5,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'monospace',
+          color: textColor,
         ),
-        Expanded(
-          child: Slider(
-            value: value,
-            min: 0.2,
-            max: 2.0,
-            divisions: 9,
-            onChanged: onChanged,
-          ),
-        ),
-        const SizedBox(width: 8),
-        SizedBox(
-          width: 85,
-          child: Text(
-            '${value.toStringAsFixed(1)}x',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'monospace',
-              color: textColor,
-            ),
-          ),
-        ),
-      ],
+      ),
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 520) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              labelWidget,
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Expanded(child: slider),
+                  const SizedBox(width: 8),
+                  speedLabel,
+                ],
+              ),
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            SizedBox(width: 175, child: labelWidget),
+            Expanded(child: slider),
+            const SizedBox(width: 8),
+            speedLabel,
+          ],
+        );
+      },
     );
   }
 

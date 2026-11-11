@@ -1,12 +1,13 @@
 {
-    "name": "full_wave_rectifier",
-    "short_name": "full_wave_rectifier",
+    "name": "EC-LAB: Full Wave Rectification",
+    "short_name": "EC-LAB",
     "start_url": ".",
+    "scope": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#F8F9FA",
+    "theme_color": "#800000",
+    "description": "An interactive electronics lab for learning full-wave rectification.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {
